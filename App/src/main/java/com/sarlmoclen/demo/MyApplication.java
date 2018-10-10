@@ -1,7 +1,9 @@
-package com.sarlmoclen.shotfix;
+package com.sarlmoclen.demo;
 
 import android.app.Application;
 import android.os.Environment;
+
+import com.sarlmoclen.shotfix.FixDexUtils;
 
 import java.io.File;
 

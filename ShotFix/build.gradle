@@ -1,13 +1,12 @@
-apply plugin: 'com.android.application'
+apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion var.compileSdkVersion
     defaultConfig {
-        applicationId "com.sarlmoclen.shotfix"
-        minSdkVersion 15
-        targetSdkVersion 28
+        minSdkVersion var.minSdkVersion
+        targetSdkVersion var.targetSdkVersion
         versionCode 1
-        versionName "1.0"
+        versionName "v0.0.1"
     }
     buildTypes {
         release {
@@ -20,5 +19,4 @@ android {
 dependencies {
     api fileTree(dir: 'libs', include: ['*.jar'])
     api 'com.android.support:appcompat-v7:28.0.0'
-    api 'com.android.support.constraint:constraint-layout:1.1.2'
 }

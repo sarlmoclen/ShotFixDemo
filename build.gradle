@@ -25,3 +25,11 @@ allprojects {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
+ext {
+    var = [
+            minSdkVersion        : 15,
+            targetSdkVersion     : 28,
+            compileSdkVersion    : 28,
+    ]
+}
