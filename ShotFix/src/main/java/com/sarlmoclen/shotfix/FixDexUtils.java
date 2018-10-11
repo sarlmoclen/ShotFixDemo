@@ -1,6 +1,7 @@
 package com.sarlmoclen.shotfix;
 
 import android.content.Context;
+import android.os.Environment;
 
 import java.io.File;
 import java.lang.reflect.Array;
@@ -16,58 +17,48 @@ public class FixDexUtils {
     private static final String APK_SUFFIX = ".apk";
     private static final String JAR_SUFFIX = ".jar";
     private static final String ZIP_SUFFIX = ".zip";
-    public static final String DEX_DIR = "odex";
-    private static final String OPTIMIZE_DEX_DIR = "optimize_dex";
-    private static HashSet<File> loadedDex = new HashSet<>();
-
-    static {
-        loadedDex.clear();
-    }
-
-    /**
-     * 加载补丁，使用默认目录：data/data/包名/files/odex
-     *
-     * @param context
-     */
-    public static void loadFixedDex(Context context) {
-        loadFixedDex(context, null);
-    }
+    public static final String DEX_DIR = "dex_dir";
+    private static final String UNZIP_DEX_DIR = "unzip_dex_dir";
 
     /**
      * 加载补丁
-     *
-     * @param context       上下文
-     * @param patchFilesDir 补丁所在目录
      */
-    public static void loadFixedDex(Context context, File patchFilesDir) {
+    public static void loadFixedDex(Context context) {
         if (context == null) {
             return;
         }
-        // 遍历所有的修复dex
-        File fileDir = patchFilesDir != null ? patchFilesDir : new File(context.getFilesDir(), DEX_DIR);// data/data/包名/files/odex（这个可以任意位置）
+        //获取DEX_DIR目录，这个目录存放补丁文件
+        File fileDir = new File(context.getExternalFilesDir(DEX_DIR).getAbsolutePath());
+        if(!fileDir.exists()){
+            fileDir.mkdirs();
+        }
+        //遍历所有的文件
         File[] listFiles = fileDir.listFiles();
+        HashSet<File> loadedDex = new HashSet<>();
         for (File file : listFiles) {
             if (file.getName().startsWith("classes") &&
                     (file.getName().endsWith(DEX_SUFFIX)
                             || file.getName().endsWith(APK_SUFFIX)
                             || file.getName().endsWith(JAR_SUFFIX)
                             || file.getName().endsWith(ZIP_SUFFIX))) {
-                loadedDex.add(file);// 存入集合
+                // 存入集合
+                loadedDex.add(file);
             }
         }
         // dex合并之前的dex
         doDexInject(context, loadedDex);
     }
 
-    private static void doDexInject(Context appContext, HashSet<File> loadedDex) {
-        String optimizeDir = appContext.getFilesDir().getAbsolutePath() + File.separator + OPTIMIZE_DEX_DIR;// data/data/包名/files/optimize_dex（这个必须是自己程序下的目录）
+    private static void doDexInject(Context context, HashSet<File> loadedDex) {
+        // data/data/包名/files/optimize_dex（这个必须是自己程序下的目录）
+        String optimizeDir = context.getFilesDir().getAbsolutePath() + File.separator + UNZIP_DEX_DIR;
         File fopt = new File(optimizeDir);
         if (!fopt.exists()) {
             fopt.mkdirs();
         }
         try {
             // 1.加载应用程序的dex
-            PathClassLoader pathLoader = (PathClassLoader) appContext.getClassLoader();
+            PathClassLoader pathLoader = (PathClassLoader) context.getClassLoader();
             for (File dex : loadedDex) {
                 // 2.加载指定的修复的dex文件
                 DexClassLoader dexLoader = new DexClassLoader(
