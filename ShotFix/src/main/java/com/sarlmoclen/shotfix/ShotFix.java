@@ -1,6 +1,7 @@
 package com.sarlmoclen.shotfix;
 
 import android.content.Context;
+import android.os.Build;
 import android.os.Environment;
 import android.text.TextUtils;
 
@@ -53,13 +54,15 @@ public class ShotFix {
         String dexPath = null;
         for (File file : listDexFiles) {
             if (file.getName().endsWith(DEX_SUFFIX)) {
-                dexPath = file.getAbsolutePath()+":";
+                dexPath = file.getAbsolutePath() + ":";
             }
         }
         if(TextUtils.isEmpty(dexPath)){
             return;
         }
-        loadDex(context, dexPath);
+        if (Build.VERSION.SDK_INT >= 14) {
+            loadDex(context, dexPath);
+        } 
     }
 
     /**
@@ -102,7 +105,6 @@ public class ShotFix {
     private static Object getPathList(Object classLoader)
             throws NoSuchFieldException, IllegalAccessException {
         return ShotFixUtils.getField(classLoader
-                , classLoader.getClass()
                 , PATHLIST);
     }
 
@@ -112,7 +114,6 @@ public class ShotFix {
     private static Object[] getDexElements(Object pathList )
             throws NoSuchFieldException, IllegalAccessException {
         return (Object[])ShotFixUtils.getField(pathList
-                , pathList.getClass()
                 , DEX_ELEMENTS);
     }
 
@@ -122,7 +123,6 @@ public class ShotFix {
     private static void setDexElements(Object pathList, Object dexElements)
             throws NoSuchFieldException, IllegalAccessException {
         ShotFixUtils.setField(pathList
-                , pathList.getClass()
                 , DEX_ELEMENTS
                 , dexElements);
     }
