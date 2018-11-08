@@ -7,7 +7,7 @@ public class ClassIsPreverifiedTest {
     private static final String TAG = "ClassIsPreverifiedTest";
 
     public void log(){
-        Log.i(TAG,"I am called");
+        Log.i(TAG,"find bug");
     }
 
 }
