@@ -14,9 +14,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         name = findViewById(R.id.name);
         //delete wrong code
-        //name.setText("find bug");
+        name.setText("find bug");
         //add right code
-        name.setText("fix bug");
+        //name.setText("fix bug");
+        ClassIsPreverifiedTest classIsPreverifiedTest = new ClassIsPreverifiedTest();
+        classIsPreverifiedTest.log();
     }
 
 }

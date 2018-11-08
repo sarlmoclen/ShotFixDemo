@@ -9,9 +9,29 @@ android {
         versionCode 1
         versionName "1.0"
     }
+    signingConfigs {
+        release {
+            keyAlias 'shotfix'
+            keyPassword '123456'
+            storeFile file("$rootDir/shotfix.jks")
+            storePassword '123456'
+        }
+        debug {
+            keyAlias 'shotfix'
+            keyPassword '123456'
+            storeFile file("$rootDir/shotfix.jks")
+            storePassword '123456'
+        }
+    }
     buildTypes {
         release {
             minifyEnabled false
+            signingConfig signingConfigs.release
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            minifyEnabled false
+            signingConfig signingConfigs.debug
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
